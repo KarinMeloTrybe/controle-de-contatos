@@ -1,12 +1,32 @@
 package br.com.km.AppPessoas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+import java.util.Objects;
+import java.util.List;
+
+
+@Entity
+@Table(name="pessoas")
 public class Pessoa {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false, unique = false)
     private String nome;
+    @Column(nullable = true)
     private String endereco;
+    @Column(nullable = true)
     private Number cep;
+    @Column(nullable = true)
     private String cidade;
+    @Column(nullable = true)
     private String uf;
+
+    @OneToMany(mappedBy = "pessoa")
+    @JsonIgnore
+    private List<Contato> contatos;
 
     public Pessoa() {}
     public Pessoa(Long id, String nome, String endereco, Number cep, String cidade, String uf) {
@@ -16,6 +36,22 @@ public class Pessoa {
         this.cep = cep;
         this.cidade = cidade;
         this.uf = uf;
+    }
+
+    public List<Contato> getContatos() {
+        return contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos;
+    }
+
+    public void criarContato(Contato contato) {
+
+    }
+
+    public void deletarContato(Contato contato) {
+
     }
 
     public Long getId() {
@@ -70,16 +106,12 @@ public class Pessoa {
     public int hashCode() {
         return Objects.hash(id);
     }
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Pessoa other = (Pessoa) obj;
-        return Objects.equals(id, other.id);
-    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pessoa pessoa = (Pessoa) o;
+        return Objects.equals(id, pessoa.id);
+    }
 }
