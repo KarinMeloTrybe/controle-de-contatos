@@ -4,15 +4,17 @@ import br.com.km.AppPessoas.model.Pessoa;
 import br.com.km.AppPessoas.repository.PessoaRepository;
 import br.com.km.AppPessoas.service.interfaces.PessoaServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class PessoaService implements PessoaServiceInterface {
 
     private PessoaRepository pessoaRepository;
     @Autowired
-    public PessoaService(PessoaRepository, pessoaRepository) {
+    public PessoaService(PessoaRepository pessoaRepository) {
         this.pessoaRepository = pessoaRepository;
     }
 
@@ -32,19 +34,19 @@ public class PessoaService implements PessoaServiceInterface {
     }
 
     @Override
-    public Pessoa update(Pessoa pessoa) {
-        Optional<Pessoa> upPessoa = pessoaRepository.findById(pessoa.getId());
+    public Pessoa update(Long id, Pessoa pessoa) {
+        Optional<Pessoa> upPessoa = pessoaRepository.findById(id);
 
         if (upPessoa.isPresent()) {
-            Pessoa newPessoa = upPessoa.get();
-            newPessoa.setNome(pessoa.getNome());
-            newPessoa.setEndereco(pessoa.getEndereco());
-            newPessoa.setCep(pessoa.getCep());
-            newPessoa.setCidade(pessoa.getCidade());
-            newPessoa.setUf(pessoa.getUf());
-            return pessoaRepository.save(newPessoa);
+            Pessoa existingPessoa = upPessoa.get();
+            existingPessoa.setNome(pessoa.getNome());
+            existingPessoa.setEndereco(pessoa.getEndereco());
+            existingPessoa.setCep(pessoa.getCep());
+            existingPessoa.setCidade(pessoa.getCidade());
+            existingPessoa.setUf(pessoa.getUf());
+            return pessoaRepository.save(existingPessoa);
         }
-        return pessoa;
+        return null;
     }
     @Override
     public void delete(Long id) {

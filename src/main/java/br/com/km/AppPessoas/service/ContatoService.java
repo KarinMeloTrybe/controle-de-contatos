@@ -1,7 +1,9 @@
 package br.com.km.AppPessoas.service;
 
 import br.com.km.AppPessoas.model.Contato;
+import br.com.km.AppPessoas.model.Pessoa;
 import br.com.km.AppPessoas.repository.ContatoRepository;
+import br.com.km.AppPessoas.repository.PessoaRepository;
 import br.com.km.AppPessoas.service.interfaces.ContatoServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,15 +16,24 @@ public class ContatoService implements ContatoServiceInterface {
 
 
     private ContatoRepository contatoRepository;
+    private PessoaRepository pessoaRepository;
 
     @Autowired
-    public ContatoService(ContatoRepository contatoRepository) {
+    public ContatoService(ContatoRepository contatoRepository, PessoaRepository pessoaRepository) {
         this.contatoRepository = contatoRepository;
+        this.pessoaRepository = pessoaRepository;
     }
 
     @Override
-    public Contato save(Contato contato) {
-        return contatoRepository.save(contato);
+    public Contato save(Long id, Contato contato) {
+        Optional<Pessoa> pessoaOptional = pessoaRepository.findById(id);
+
+        if (pessoaOptional.isPresent()) {
+            Pessoa pessoa = pessoaOptional.get();
+            contato.setPessoa(pessoa);
+            return contatoRepository.save(contato);
+        }
+        return null;
     }
 
     @Override
@@ -36,16 +47,21 @@ public class ContatoService implements ContatoServiceInterface {
     }
 
     @Override
-    public Contato update(Contato contato) {
-        Optional<Contato> upContato = contatoRepository.findById(contato.getId());
+        public Optional<Contato> update(Long id, Contato contato) {
+            Optional<Contato> existingContato = contatoRepository.findById(id);
 
-        if(upContato.isPresent()) {
-            Contato newContato = upContato.get();
-            newContato.setContato(contato.getContato());
-            return contatoRepository.save(newContato);
+            if (existingContato.isPresent()) {
+                Contato updatedContato = existingContato.get();
+                if (contato.getContato() != null) {
+                    updatedContato.setContato(contato.getContato());
+                }
+                if (contato.getTipoDeContato() != null) {
+                    updatedContato.setTipoDeContato(contato.getTipoDeContato());
+                }
+                contatoRepository.save(updatedContato);
+            }
+            return existingContato;
         }
-        return contato;
-    }
 
     @Override
     public void delete(Long id) {

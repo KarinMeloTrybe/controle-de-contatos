@@ -2,6 +2,7 @@ package br.com.km.AppPessoas.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Objects;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, unique = false)
     private String nome;
     @Column(nullable = true)
@@ -46,13 +48,6 @@ public class Pessoa {
         this.contatos = contatos;
     }
 
-    public void criarContato(Contato contato) {
-
-    }
-
-    public void deletarContato(Contato contato) {
-
-    }
 
     public Long getId() {
         return id;

@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ContatoServiceInterface {
-    Contato save(Contato contato);
+    Contato save(Long id, Contato contato);
     Optional<Contato> getById(Long id);
     List<Contato> getAll();
-    Contato update(Contato contato);
+    Optional<Contato> update(Long id, Contato contato);
     void delete(Long id);
 }
